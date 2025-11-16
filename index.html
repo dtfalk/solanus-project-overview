@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Father Solanus Casey Hologram Project</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      /* Softer green accent */
+      --accent: #16a34a;
+      --accent-soft: rgba(22, 163, 74, 0.18);
+      --accent-border: rgba(22, 163, 74, 0.6);
+      --bg: #020617;
+      --bg-elevated: #020818;
+      --bg-card: #020b23;
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.25);
+      --border-strong: rgba(148, 163, 184, 0.4);
+      --shadow-soft: 0 22px 60px rgba(15, 23, 42, 0.85);
+      --shadow-strong: 0 30px 80px rgba(15, 23, 42, 0.95);
+      --radius-lg: 18px;
+      --radius-xl: 26px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top left, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px; /* larger for elderly readers */
+      line-height: 1.6;
+    }
+
+    .page {
+      min-height: 100vh;
+      padding: 32px 20px 60px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 1320px;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      border-radius: 32px;
+      border: 1px solid rgba(148, 163, 184, 0.32);
+      box-shadow: var(--shadow-soft);
+      padding: 26px 26px 38px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: -120px;
+      background:
+        radial-gradient(circle at 18% 0, rgba(22, 163, 74, 0.13), transparent 60%),
+        radial-gradient(circle at 85% 12%, rgba(59, 130, 246, 0.16), transparent 60%);
+      opacity: 0.95;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .shell-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      align-items: center;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, rgba(250, 250, 250, 0.8), rgba(22, 163, 74, 0.3));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.5), 0 0 40px rgba(22, 163, 74, 0.4);
+    }
+
+    .title-icon span {
+      font-size: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--text-soft);
+      max-width: 650px;
+      font-size: 16px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tag-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(22, 163, 74, 0.7);
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.7fr);
+      gap: 22px;
+    }
+
+    @media (max-width: 980px) {
+      .main-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* Interactive map */
+
+    .map-card {
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.98));
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 18px 18px 22px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 40% 0, rgba(148, 163, 184, 0.1), transparent 55%);
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .map-header {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 18px;
+    }
+
+    .map-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .map-title {
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+    .map-icon {
+      font-size: 18px;
+    }
+
+    .map-subtitle {
+      margin: 0;
+      font-size: 15px;
+      color: var(--text-soft);
+      max-width: 640px;
+    }
+
+    .map-grid {
+      position: relative;
+      margin-top: 14px;
+      padding: 10px 6px 8px;
+    }
+
+    .lane-label-row {
+      display: grid;
+      grid-template-columns: 1.05fr 1.05fr;
+      font-size: 12px;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.85);
+      margin-bottom: 6px;
+      padding: 0 6px;
+    }
+
+    .lane-label-row span:nth-child(2) {
+      text-align: right;
+    }
+
+    .swimlanes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 40px;
+      padding: 8px 6px 0;
+    }
+
+    .lane {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .lane.lane-wide {
+      grid-column: 1 / 3;
+      margin-top: 18px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.6);
+      padding-top: 18px;
+    }
+
+    .lane-title {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.82);
+      margin-bottom: 4px;
+    }
+
+    .node-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+
+    .node-card {
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.98));
+      border: 1px solid var(--border-subtle);
+      padding: 12px 12px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.85);
+      transition:
+        transform 0.16s ease,
+        box-shadow 0.16s ease,
+        border-color 0.16s ease,
+        background 0.16s ease;
+      min-height: 66px; /* slightly taller for readability */
+    }
+
+    .node-card.highlight {
+      background: radial-gradient(circle at top left, var(--accent-soft), rgba(15, 23, 42, 0.99));
+      border-color: var(--accent-border);
+      box-shadow:
+        0 0 0 1px rgba(22, 163, 74, 0.8),
+        0 20px 45px rgba(16, 185, 129, 0.32);
+    }
+
+    .node-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .node-subtitle {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .node-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .node-card:hover .node-title {
+      color: #e5f5ff;
+    }
+
+    .arrow {
+      text-align: center;
+      font-size: 19px;
+      color: rgba(148, 163, 184, 0.9);
+      line-height: 1;
+      user-select: none;
+    }
+
+    .arrow.arrow-spacer {
+      margin-top: 4px;
+      margin-bottom: 2px;
+    }
+
+    .arrow.horizontal {
+      font-size: 22px;
+      margin: 0 10px;
+      align-self: center;
+    }
+
+    .lane-wide-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lane-wide-row > .node-card {
+      min-width: 210px;
+      flex: 0 1 240px;
+    }
+
+    /* Info panel */
+
+    .info-card {
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.98));
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 18px 18px 22px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 75% 0, rgba(37, 99, 235, 0.18), transparent 58%);
+      pointer-events: none;
+    }
+
+    .info-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .info-label {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.9);
+      margin-bottom: 6px;
+    }
+
+    .info-title {
+      margin: 0 0 4px;
+      font-size: 20px;
+    }
+
+    .info-tagline {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: var(--text-soft);
+    }
+
+    .info-body {
+      font-size: 15px;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .info-body p {
+      margin: 0 0 8px;
+    }
+
+    .info-list {
+      margin: 0 0 10px 18px;
+      padding: 0;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    .info-list li {
+      margin-bottom: 4px;
+    }
+
+    .info-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .info-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .badge {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .info-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 7px 13px;
+      font-size: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--text-main);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition:
+        background 0.16s ease,
+        border-color 0.16s ease,
+        transform 0.12s ease,
+        box-shadow 0.12s ease;
+    }
+
+    .btn-primary {
+      border-color: rgba(22, 163, 74, 0.85);
+      background: radial-gradient(circle at top left, rgba(22, 163, 74, 0.32), rgba(22, 163, 74, 0.12));
+      box-shadow: 0 12px 26px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 16px 32px rgba(16, 185, 129, 0.4);
+      background: radial-gradient(circle at top left, rgba(22, 163, 74, 0.35), rgba(22, 163, 74, 0.16));
+    }
+
+    .btn span.icon {
+      font-size: 15px;
+    }
+
+    /* Modal */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 1));
+      border-radius: 26px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      box-shadow: var(--shadow-strong);
+      padding: 18px 20px 22px;
+      max-width: 880px;
+      max-height: 80vh;
+      width: 100%;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .modal-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .modal-subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-soft);
+    }
+
+    .modal-close {
+      border: none;
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--text-soft);
+      border-radius: 999px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      transition: background 0.12s ease, transform 0.12s ease;
+    }
+
+    .modal-close:hover {
+      background: rgba(30, 64, 175, 0.85);
+      color: #e5e7eb;
+      transform: translateY(-1px);
+    }
+
+    .modal-body {
+      padding-top: 6px;
+      font-size: 15px;
+      overflow: auto;
+      margin-right: -4px;
+      padding-right: 4px;
+    }
+
+    .modal-body p {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .modal-body ul {
+      margin-top: 0;
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+
+    .modal-body li {
+      margin-bottom: 4px;
+    }
+
+    /* Readable explanation and video sections */
+
+    .extras {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 980px) {
+      .extras {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.98));
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 16px 18px 20px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .panel h3 {
+      font-size: 17px;
+      margin-bottom: 4px;
+      margin-top: 14px;
+    }
+
+    .panel p {
+      font-size: 15px;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .panel ul {
+      font-size: 15px;
+      padding-left: 20px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .term-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .term-list li {
+      margin-bottom: 6px;
+    }
+
+    .term-name {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .video-wrapper {
+      margin-top: 10px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: #000;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .video-wrapper video {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 420px;
+      background: #000;
+    }
+
+    .video-note {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    a {
+      color: #7dd3fc;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="shell">
+    <div class="shell-inner">
+
+      <header class="header">
+        <div class="title-block">
+          <div class="title-row">
+            <div class="title-icon"><span>✺</span></div>
+            <h1>Father Solanus Casey Hologram Project</h1>
+          </div>
+          <p class="subtitle">
+            First modular pipeline for turning the writings of Father Solanus Casey into an interactive, searchable and
+            eventually holographic experience. Each block below is a separate tool that can be improved later.
+          </p>
+        </div>
+        <div class="tag-row">
+          <div class="tag"><span class="tag-dot"></span> Modular and extensible</div>
+          <div class="tag"><span class="tag-dot"></span> Corpus, indexer and mimicker</div>
+        </div>
+      </header>
+
+      <main class="main-layout">
+        <!-- Interactive map -->
+        <section class="map-card" aria-label="Interactive pipeline map">
+          <div class="map-header">
+            <div class="map-title-row">
+              <span class="map-icon">🗺️</span>
+              <h2 class="map-title">Interactive pipeline map</h2>
+            </div>
+            <p class="map-subtitle">
+              Click any component to see what it does. The arrows show how information moves from the original PDFs
+              to the final hologram.
+            </p>
+          </div>
+
+          <div class="map-grid">
+            <div class="lane-title">Corpus preparation</div>
+            <div class="swimlanes lane-wide">
+              <div class="node-stack">
+                <button class="node-card" data-node-id="p1_extraction">
+                  <div class="node-title">Phase 1 - Extraction</div>
+                  <div class="node-subtitle">PDFs to clean pages</div>
+                </button>
+                <div class="arrow arrow-spacer">↓</div>
+                <button class="node-card" data-node-id="p2_documents">
+                  <div class="node-title">Phase 2 - Documents</div>
+                  <div class="node-subtitle">Pages to documents</div>
+                </button>
+              </div>
+            </div>
+
+            <div class="arrow arrow-spacer">↓</div>
+            <div class="lane-label-row">
+              <span>Indexer path</span>
+              <span>Mimicker path</span>
+            </div>
+
+            <div class="swimlanes">
+              <!-- Indexer lane -->
+              <div class="lane">
+                <div class="node-stack">
+                  <button class="node-card" data-node-id="indexer_format">
+                    <div class="node-title">Indexer 1 - Format</div>
+                    <div class="node-subtitle">Docs to JSON plus metadata</div>
+                  </button>
+                  <div class="arrow arrow-spacer">↓</div>
+                  <button class="node-card" data-node-id="indexer_semantics">
+                    <div class="node-title">Indexer 2 - Semantics</div>
+                    <div class="node-subtitle">JSON to enriched JSON</div>
+                  </button>
+                  <div class="arrow arrow-spacer">↓</div>
+                  <button class="node-card" data-node-id="indexer_azure">
+                    <div class="node-title">Indexer 3 - Azure Search</div>
+                    <div class="node-subtitle">Corpus to search index</div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Mimicker lane -->
+              <div class="lane">
+                <div class="node-stack">
+                  <button class="node-card highlight" data-node-id="mimicker_sanitization">
+                    <div class="node-title">Mimicker 1 - Sanitization</div>
+                    <div class="node-subtitle">Solanus text to LLM pairs</div>
+                  </button>
+                  <div class="arrow arrow-spacer">↓</div>
+                  <button class="node-card" data-node-id="mimicker_training">
+                    <div class="node-title">Mimicker 2 - Training</div>
+                    <div class="node-subtitle">Pairs to style model</div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="arrow arrow-spacer">↓</div>
+            <div class="lane lane-wide">
+              <div class="lane-title">End to end system</div>
+              <div class="lane-wide-row">
+                <button class="node-card" data-node-id="combine">
+                  <div class="node-title">Combine</div>
+                  <div class="node-subtitle">Grounded answers in Solanus style</div>
+                </button>
+                <div class="arrow horizontal">→</div>
+                <button class="node-card" data-node-id="voice">
+                  <div class="node-title">Voice</div>
+                  <div class="node-subtitle">Text to speech</div>
+                </button>
+                <div class="arrow horizontal">→</div>
+                <button class="node-card" data-node-id="hologram">
+                  <div class="node-title">Hologram</div>
+                  <div class="node-subtitle">Speech to holographic presence</div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Info panel -->
+        <section class="info-card" aria-label="Selected phase details">
+          <div class="info-inner">
+            <div class="info-label">Selected component</div>
+            <h2 class="info-title" id="info-title">Mimicker 1 - Sanitization</h2>
+            <p class="info-tagline" id="info-tagline">Solanus text to LLM pairs</p>
+
+            <div class="info-body" id="info-body">
+              <p>
+                This step takes original writings from Father Solanus and rewrites them in a plain, neutral style.
+                That neutral version is created by an LLM, which is a large language model or smart text program.
+              </p>
+              <p>
+                The neutral version and the original are stored as pairs. Later, those pairs teach a model how to
+                move from neutral language back into the unique style of Father Solanus.
+              </p>
+            </div>
+
+            <ul class="info-list" id="info-list">
+              <li>Input - chunks of Solanus writings</li>
+              <li>Output - pairs of neutral and original text</li>
+              <li>Use - training data for the style model</li>
+            </ul>
+
+            <div class="info-footer">
+              <div class="info-badges" id="info-badges">
+                <span class="badge">Mimicker path</span>
+                <span class="badge">Uses LLM rewriting</span>
+              </div>
+              <div class="info-actions">
+                <button class="btn btn-primary" id="btn-open-modal">
+                  <span class="icon">↗</span>
+                  <span>Jump to full description</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Extra sections: explanations and video -->
+      <section class="extras">
+        <section class="panel" id="readable-explanation">
+          <h2>Plain language explanation</h2>
+          <p>
+            The project is built as a set of small tools that work together. Each tool can also be used on its own.
+            The steps below retell the README in everyday language and explain technical terms along the way.
+          </p>
+
+          <h3>Where we are</h3>
+          <p>
+            We currently have the publicly available writings of Father Solanus Casey in PDF format. A PDF is a
+            digital version of a document that looks like a scanned page or a printed book.
+          </p>
+
+          <h3>Where we want to go</h3>
+          <p>Our goals are:</p>
+          <ul>
+            <li>Let a computer speak in his voice and style</li>
+            <li>Have that computer answer questions by using his real writings</li>
+            <li>Present all of this through an interactive hologram of Father Solanus</li>
+          </ul>
+
+          <h3>Key ideas in simple terms</h3>
+          <ul class="term-list">
+            <li><span class="term-name">Machine readable</span> - text that is clean and organized so a computer program can understand it.</li>
+            <li><span class="term-name">LLM</span> - stands for large language model. It is a smart text program that can read, write and summarize.</li>
+            <li><span class="term-name">JSON</span> - a tidy way of storing information using name and value pairs, like labeled boxes in a closet.</li>
+            <li><span class="term-name">Metadata</span> - small bits of information about a document, like its date, type and who it was written to.</li>
+            <li><span class="term-name">Index</span> - a search friendly catalog that lets us quickly find the right documents.</li>
+            <li><span class="term-name">Embedding</span> - a list of numbers that acts as a fingerprint of a piece of text, used for smart searching.</li>
+            <li><span class="term-name">GPU</span> - a graphics processing unit, a type of computer chip that is very good at doing many calculations in parallel.</li>
+          </ul>
+
+          <p>
+            The rest of the page and the detailed README below explain how the extraction, indexer and mimicker
+            connect. Even if the full hologram is not used, the extraction pipeline is already useful for archivists,
+            the indexer is already a digital library and the mimicker is already a style transformation tool.
+          </p>
+        </section>
+
+        <section class="panel" id="indexer-video">
+          <h2>Indexer example video</h2>
+          <p>
+            This space is reserved for a short video that shows the indexer in action. The indexer is the part of the
+            system that turns the writings into a searchable library.
+          </p>
+          <div class="video-wrapper">
+            <video src="./indexer-example.mp4" controls preload="metadata">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <p class="video-note">
+            Use the controls to play or pause the video. Most browsers let you open the video in full screen by
+            clicking the square icon in the corner of the player.
+          </p>
+        </section>
+      </section>
+
+      <h2>Full Project README</h2>
+        <iframe 
+            src="https://rawcdn.githack.com/dtfalk/solanus-project-overview/master/README.md"
+            style="width:100%; height:600px; border:1px solid #444; border-radius:8px;"
+        ></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <div class="modal-title-block">
+        <h2 class="modal-title" id="modal-title">Full description</h2>
+        <p class="modal-subtitle" id="modal-subtitle"></p>
+      </div>
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        ×
+      </button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <!-- Filled by script -->
+    </div>
+  </div>
+</div>
+
+<script>
+  const phaseDetails = {
+    p1_extraction: {
+      title: "Phase 1 - Initial data extraction",
+      tagline: "PDFs to clean pages",
+      body: [
+        "This phase takes the original PDF files of Father Solanus Casey's writings and pulls out the text from each page.",
+        "Python tools handle the basic extraction. When needed, OCR, which means optical character recognition, is used to read text from scanned images.",
+        "The text is checked several times, both by people and by an LLM, to make sure it matches the original pages as closely as possible."
+      ],
+      list: [
+        "Input - PDF volumes of the writings",
+        "Output - clean text for each page",
+        "Use - foundation for splitting into true documents"
+      ],
+      badges: ["Corpus preparation", "Uses Python plus OCR"],
+      modal: [
+        "<p><strong>Starting point</strong> - raw PDF files that contain the writings of Father Solanus Casey.</p>",
+        "<p><strong>Goal</strong> - produce clean text for each page while keeping the original wording and layout as much as possible.</p>",
+        "<p><strong>Process in more detail</strong></p>",
+        "<ul>",
+        "<li>Use Python tools such as pdfplumber or PyPDF2 to read text that is already stored inside the PDF.</li>",
+        "<li>When the PDF is more like a photograph of a page, use OCR. OCR stands for optical character recognition and turns the image into real text.</li>",
+        "<li>Run both versions through an LLM and ask it to highlight any differences, which are then reviewed by a person.</li>",
+        "<li>For especially important pages, run them through the LLM multiple times and look for agreement among the results.</li>",
+        "</ul>",
+        "<p>Accurate extraction is critical because every later step depends on this text.</p>"
+      ]
+    },
+    p2_documents: {
+      title: "Phase 2 - Break pages into documents",
+      tagline: "Pages to documents",
+      body: [
+        "Here the page by page text is split into true documents such as letters, notes and reflections.",
+        "LLM passes are used to spot where one document ends and another begins, paying attention to headings, dates and salutations.",
+        "The result is a set of individual documents, each stored as its own file."
+      ],
+      list: [
+        "Input - cleaned pages of text",
+        "Output - individual documents",
+        "Use - later indexing and style modeling"
+      ],
+      badges: ["Corpus preparation", "Uses document boundaries"],
+      modal: [
+        "<p><strong>Starting point</strong> - clean text for each page.</p>",
+        "<p><strong>Goal</strong> - group the pages into true documents such as letters or notebook entries.</p>",
+        "<p><strong>Process in more detail</strong></p>",
+        "<ul>",
+        "<li>First, find big breaks, such as the end of one notebook and the start of another, using tables of contents when they exist.</li>",
+        "<li>Within each big section, slide across several pages at a time and ask an LLM where new documents seem to start or end.</li>",
+        "<li>Check the areas around suspected breaks more closely. The model looks for greetings like \"Dear\" and signature lines that signal the end of letters.</li>",
+        "<li>Store each document as its own file with a stable identifier that can be reused later.</li>",
+        "</ul>",
+        "<p>Getting document boundaries right is important for historical accuracy and for later search quality.</p>"
+      ]
+    },
+    indexer_format: {
+      title: "Indexer 1 - Data formatting",
+      tagline: "Docs to JSON plus metadata",
+      body: [
+        "Each document is turned into a JSON record. JSON is a tidy way of storing information using name and value pairs.",
+        "The record includes the full text and key metadata such as date, document type and source.",
+        "This step can be used on its own as a structured archive of the writings."
+      ],
+      list: [
+        "Input - individual documents",
+        "Output - JSON records with metadata",
+        "Use - basis for search and analysis"
+      ],
+      badges: ["Indexer path", "JSON based"],
+      modal: [
+        "<p><strong>Goal</strong> - convert each document into a standardized JSON file with clear labels.</p>",
+        "<p>JSON is a simple text format where each item has a name and a value. For example, <code>\"year\": 1941</code> or <code>\"document_type\": \"letter\"</code>.</p>",
+        "<p><strong>Typical fields</strong></p>",
+        "<ul>",
+        "<li>Document type, such as letter, note, sermon, reflection or prayer.</li>",
+        "<li>Date fields: year, month and day when available.</li>",
+        "<li>Source information: which PDF and which internal identifier it came from.</li>",
+        "<li>The complete text of the document itself.</li>",
+        "</ul>",
+        "<p>An LLM reads each document, extracts these pieces and fills them into the JSON template. Multiple passes help keep the results consistent.</p>"
+      ]
+    },
+    indexer_semantics: {
+      title: "Indexer 2 - Semantic breakdowns",
+      tagline: "JSON to enriched JSON",
+      body: [
+        "Here the JSON files gain deeper meaning. The system learns who a letter is written to, what the occasion is and what themes are present.",
+        "These semantic fields make it easier to search for specific types of writings.",
+        "The enriched JSON is useful even without the later indexing step."
+      ],
+      list: [
+        "Input - basic JSON",
+        "Output - enriched JSON with themes",
+        "Use - fine grained search and study"
+      ],
+      badges: ["Indexer path", "Semantic metadata"],
+      modal: [
+        "<p><strong>Goal</strong> - give each document richer, more descriptive metadata.</p>",
+        "<p>The LLM looks for elements such as:</p>",
+        "<ul>",
+        "<li>The recipient of a letter, if there is one.</li>",
+        "<li>The occasion or reason the document was written.</li>",
+        "<li>Main topics and spiritual themes, such as prayer, trust in God, suffering or healing.</li>",
+        "<li>Named people and places that a researcher might care about.</li>",
+        "</ul>",
+        "<p>All of this is added to the JSON under a semantic section, which makes later search much more powerful.</p>"
+      ]
+    },
+    indexer_azure: {
+      title: "Indexer 3 - Azure AI Search",
+      tagline: "Corpus to search index",
+      body: [
+        "The enriched JSON records are loaded into Azure AI Search, a cloud service that hosts a fast, intelligent index.",
+        "Each document is stored with both its text and an embedding, which is a numeric fingerprint used for similarity search.",
+        "This index can be used on its own as a standalone digital library for scholars."
+      ],
+      list: [
+        "Input - enriched JSON corpus",
+        "Output - hosted search index",
+        "Use - retrieval for Q and A and research"
+      ],
+      badges: ["Indexer path", "Azure AI Search"],
+      modal: [
+        "<p><strong>Goal</strong> - build a searchable index so users can quickly find relevant writings.</p>",
+        "<p><strong>What is an index</strong> - here an index is a special data structure that lets a search engine know which documents match which words and topics.</p>",
+        "<p><strong>Steps</strong></p>",
+        "<ul>",
+        "<li>Define a schema in Azure AI Search that lists which fields are searchable, which can be filtered and which affect ranking.</li>",
+        "<li>Create an embedding for each document. An embedding is a numeric fingerprint that captures the meaning of the text.</li>",
+        "<li>Upload each JSON document and its embedding into the index.</li>",
+        "</ul>",
+        "<p>Once the index is built, both simple keyword queries and smart semantic queries become possible.</p>"
+      ]
+    },
+    mimicker_sanitization: {
+      title: "Mimicker 1 - LLM sanitization",
+      tagline: "Solanus text to LLM pairs",
+      body: [
+        "Original writings from Father Solanus are rewritten by an LLM into a neutral, modern style.",
+        "Each neutral version is kept together with the original, forming a training pair.",
+        "These pairs are the raw material for teaching the style model."
+      ],
+      list: [
+        "Input - original writings",
+        "Output - neutral and original pairs",
+        "Use - training data for the mimicker"
+      ],
+      badges: ["Mimicker path", "Style preparation"],
+      modal: [
+        "<p><strong>Goal</strong> - create parallel data for training a style transformation model.</p>",
+        "<p>For each document:</p>",
+        "<ul>",
+        "<li>The LLM rewrites the text in a plain, generic voice, without changing the meaning.</li>",
+        "<li>The original text is kept alongside this neutral version.</li>",
+        "<li>The pair is saved and labeled so it can be used in training.</li>",
+        "</ul>",
+        "<p>This makes it possible to later ask a model to take a neutral sentence and turn it back into Solanus Casey's distinct way of speaking.</p>"
+      ]
+    },
+    mimicker_training: {
+      title: "Mimicker 2 - Model training",
+      tagline: "Pairs to style model",
+      body: [
+        "The neutral to original pairs are used to train a model on a local GPU.",
+        "The model learns how to rewrite neutral language into the style of Father Solanus.",
+        "This component can be used as a standalone tool for stylistic transformation."
+      ],
+      list: [
+        "Input - sanitized pairs",
+        "Output - style mimicking model",
+        "Use - rewrite LLM answers in his voice"
+      ],
+      badges: ["Mimicker path", "GPU training"],
+      modal: [
+        "<p><strong>Goal</strong> - train a model that can turn plain language into the style of Father Solanus Casey.</p>",
+        "<p><strong>Training setup</strong></p>",
+        "<ul>",
+          "<li>Input sentences: neutral LLM versions of the writings.</li>",
+          "<li>Target sentences: original writings from Father Solanus.</li>",
+          "<li>Hardware: a local GPU, which is a chip well suited for this sort of repeated calculation.</li>",
+        "</ul>",
+        "<p>After training, when the model sees a new neutral answer, it can rewrite it in a way that resembles the tone and phrasing of Father Solanus.</p>"
+      ]
+    },
+    combine: {
+      title: "Combine - Indexer plus mimicker",
+      tagline: "Grounded answers in Solanus style",
+      body: [
+        "At this stage the indexer and the mimicker paths come together.",
+        "The indexer supplies real passages from the writings. The general LLM builds an answer using those passages.",
+        "Finally the mimicker rewrites the answer in the recognizable style of Father Solanus."
+      ],
+      list: [
+        "Input - user question",
+        "Output - answer grounded in real writings",
+        "Use - the core intelligent system"
+      ],
+      badges: ["End to end system", "Retrieval plus generation"],
+      modal: [
+        "<p><strong>Workflow</strong></p>",
+        "<ol>",
+        "<li>The user asks a question in ordinary language.</li>",
+        "<li>An LLM reads the question and asks the indexer for relevant documents.</li>",
+        "<li>The LLM drafts an answer by quoting and summarizing those documents.</li>",
+        "<li>The mimicker rewrites that answer in the style of Father Solanus.</li>",
+        "</ol>",
+        "<p>The result is a response that both respects the historical writings and sounds like him.</p>"
+      ]
+    },
+    voice: {
+      title: "Voice - Text to speech",
+      tagline: "Text to spoken audio",
+      body: [
+        "Here the written answer in Solanus style is turned into audio using text to speech tools.",
+        "If authentic recordings are available, they can guide the voice. If not, a gentle, clear synthetic voice is chosen.",
+        "This module can be used on its own to read any Solanus style text aloud."
+      ],
+      list: [
+        "Input - styled text",
+        "Output - audio file or stream",
+        "Use - spoken responses"
+      ],
+      badges: ["Voice mimicker", "Text to speech"],
+      modal: [
+        "<p><strong>Goal</strong> - produce spoken audio that matches the style of Father Solanus.</p>",
+        "<p>Text to speech software takes the words that the mimicker produced and generates a sound file.</p>",
+        "<p>If historical audio exists, a voice cloning tool can nudge the sound toward his real voice. Otherwise, a carefully chosen synthetic voice is used that reflects his simplicity and warmth.</p>",
+        "<p>This module can also be used by itself to read fixed prayers or letters aloud.</p>"
+      ]
+    },
+    hologram: {
+      title: "Hologram - Visual presence",
+      tagline: "Speech to holographic presence",
+      body: [
+        "The final step connects the audio to a visual representation of Father Solanus.",
+        "An animated figure moves its mouth and face in sync with the spoken words.",
+        "This figure can be displayed using different types of hologram style hardware."
+      ],
+      list: [
+        "Input - audio and text timing",
+        "Output - animated visual of Father Solanus",
+        "Use - full hologram experience"
+      ],
+      badges: ["Hologram assembly", "Avatar and display"],
+      modal: [
+        "<p><strong>Goal</strong> - present the system as a respectful holographic presence of Father Solanus Casey.</p>",
+        "<p>Behind the scenes, the hologram is an animated figure that receives the speech track and timing information. Lip sync and simple gestures are driven by that timing.</p>",
+        "<p>The figure can be shown using techniques such as rear projection, hologram fans or Pepper's ghost displays. In all cases, the underlying intelligence still comes from the indexer and mimicker pipeline.</p>"
+      ]
+    }
+  };
+
+  const infoTitle = document.getElementById("info-title");
+  const infoTagline = document.getElementById("info-tagline");
+  const infoBody = document.getElementById("info-body");
+  const infoList = document.getElementById("info-list");
+  const infoBadges = document.getElementById("info-badges");
+  const btnOpenModal = document.getElementById("btn-open-modal");
+
+  const modalBackdrop = document.getElementById("modal-backdrop");
+  const modalTitle = document.getElementById("modal-title");
+  const modalSubtitle = document.getElementById("modal-subtitle");
+  const modalBody = document.getElementById("modal-body");
+  const modalClose = document.getElementById("modal-close");
+
+  let currentNodeId = "mimicker_sanitization";
+
+  function renderInfo(nodeId) {
+    const data = phaseDetails[nodeId];
+    if (!data) return;
+
+    currentNodeId = nodeId;
+
+    infoTitle.textContent = data.title;
+    infoTagline.textContent = data.tagline;
+
+    infoBody.innerHTML = data.body.map(p => `<p>${p}</p>`).join("");
+
+    infoList.innerHTML = "";
+    data.list.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      infoList.appendChild(li);
+    });
+
+    infoBadges.innerHTML = "";
+    data.badges.forEach(b => {
+      const span = document.createElement("span");
+      span.className = "badge";
+      span.textContent = b;
+      infoBadges.appendChild(span);
+    });
+
+    document.querySelectorAll(".node-card").forEach(card => {
+      card.classList.toggle("highlight", card.dataset.nodeId === nodeId);
+    });
+  }
+
+  function openModalForCurrent() {
+    const data = phaseDetails[currentNodeId];
+    if (!data) return;
+
+    modalTitle.textContent = data.title;
+    modalSubtitle.textContent = data.tagline;
+    modalBody.innerHTML = data.modal.join("");
+    modalBackdrop.classList.add("show");
+    modalBackdrop.setAttribute("aria-hidden", "false");
+  }
+
+  function closeModal() {
+    modalBackdrop.classList.remove("show");
+    modalBackdrop.setAttribute("aria-hidden", "true");
+  }
+
+  document.querySelectorAll(".node-card").forEach(card => {
+    card.addEventListener("click", () => {
+      renderInfo(card.dataset.nodeId);
+    });
+  });
+
+  btnOpenModal.addEventListener("click", openModalForCurrent);
+  modalClose.addEventListener("click", closeModal);
+  modalBackdrop.addEventListener("click", e => {
+    if (e.target === modalBackdrop) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") {
+      closeModal();
+    }
+  });
+
+  // Initial render
+  renderInfo(currentNodeId);
+</script>
+</body>
+</html>
