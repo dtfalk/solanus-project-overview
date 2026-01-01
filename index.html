@@ -399,6 +399,32 @@
       margin: 0 0 8px;
     }
 
+    .info-section-title {
+      margin-top: 14px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.9);
+    }
+
+    .info-progress-summary {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: var(--text-soft);
+    }
+
+    .info-progress-list {
+      margin: 0 0 10px 18px;
+      padding: 0;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    .info-progress-list li {
+      margin-bottom: 4px;
+    }
+
     .info-list {
       margin: 0 0 10px 18px;
       padding: 0;
@@ -579,6 +605,65 @@
 
     .modal-body li {
       margin-bottom: 4px;
+    }
+
+    .modal-body h3 {
+      margin: 16px 0 6px;
+      font-size: 16px;
+      color: #e5e7eb;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .media-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .media-card {
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(2, 6, 23, 0.88);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.85);
+    }
+
+    .media-card .media-inner {
+      padding: 12px 12px 10px;
+    }
+
+    .media-placeholder {
+      height: 170px;
+      border-radius: 14px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      color: rgba(148, 163, 184, 0.95);
+      font-size: 14px;
+    }
+
+    .media-caption {
+      margin: 8px 0 0;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .media-card img,
+    .media-card video {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #000;
     }
 
     /* Readable explanation and video sections */
@@ -821,6 +906,10 @@
               <li>Use - training data for the style model</li>
             </ul>
 
+            <div class="info-section-title">Progress</div>
+            <p class="info-progress-summary" id="info-progress-summary"></p>
+            <ul class="info-progress-list" id="info-progress-list"></ul>
+
             <div class="info-footer">
               <div class="info-badges" id="info-badges">
                 <span class="badge">Mimicker path</span>
@@ -926,30 +1015,62 @@
 <script>
   const phaseDetails = {
     p1_extraction: {
-      title: "Phase 1 - Initial data extraction",
-      tagline: "PDFs to clean pages",
+      title: "Phase 1 - Extraction (OCR + artifacts)",
+      tagline: "PDFs → per-page OCR + reviewable outputs",
       body: [
-        "This phase takes the original PDF files of Father Solanus Casey's writings and pulls out the text from each page.",
-        "Python tools handle the basic extraction. When needed, OCR, which means optical character recognition, is used to read text from scanned images.",
-        "The text is checked several times, both by people and by an LLM, to make sure it matches the original pages as closely as possible."
+        "This phase turns raw PDFs into deterministic, per-page OCR outputs we can audit and re-run. The core OCR engine is Azure AI Document Intelligence.",
+        "We run two Document Intelligence models: prebuilt-read (maximizes raw text) and prebuilt-layout (adds geometry so we can reconstruct pages). We save both JSON outputs verbatim as the ground truth for everything that follows.",
+        "From those saved files we generate an OCR-quality report and a reconstructed HTML version of each page so humans can review “does this match the original page?”."
       ],
       list: [
-        "Input - PDF volumes of the writings",
-        "Output - clean text for each page",
-        "Use - foundation for splitting into true documents"
+        "Input - PDF volumes (native text or scanned images)",
+        "Output - per-page layout.json/read.json plus reconstructed.html and analysis reports",
+        "Use - trustworthy foundation for document splitting, indexing and later Q&A"
       ],
-      badges: ["Corpus preparation", "Uses Python plus OCR"],
+      badges: ["Corpus preparation", "Azure Document Intelligence", "Deterministic outputs", "Human review"],
+      progressSummary: "Implemented end-to-end for repeatable OCR + review artifacts.",
+      progress: [
+        "Runs Document Intelligence prebuilt-read + prebuilt-layout and writes per-page JSON files.",
+        "Produces analysis reports that flag pages where read/layout disagree (higher review priority).",
+        "Reconstructs each page as positioned HTML for side-by-side comparison with the original.",
+        "Supports bulk upload workflows (zip-first to avoid thousands of tiny uploads).",
+        "Reviewer webapp can serve original PDFs/images next to reconstructed HTML and save pass/fail results."
+      ],
+      media: [
+        {
+          type: "video",
+          src: "./review-webapp.mp4",
+          caption: "Reviewer webapp walkthrough (PDF vs reconstructed HTML)."
+        }
+      ],
       modal: [
-        "<p><strong>Starting point</strong> - raw PDF files that contain the writings of Father Solanus Casey.</p>",
-        "<p><strong>Goal</strong> - produce clean text for each page while keeping the original wording and layout as much as possible.</p>",
-        "<p><strong>Process in more detail</strong></p>",
+        "<p><strong>Starting point</strong> - raw PDF files containing Father Solanus Casey’s writings (some are text PDFs, many are scanned pages).</p>",
+        "<p><strong>Goal</strong> - produce page-by-page outputs we can trust, audit, and improve over time without losing the original evidence.</p>",
+
+        "<h3>1) Deterministic OCR outputs</h3>",
+        "<p>We use <strong>Azure AI Document Intelligence</strong> in two modes:</p>",
         "<ul>",
-        "<li>Use Python tools such as pdfplumber or PyPDF2 to read text that is already stored inside the PDF.</li>",
-        "<li>When the PDF is more like a photograph of a page, use OCR. OCR stands for optical character recognition and turns the image into real text.</li>",
-        "<li>Run both versions through an LLM and ask it to highlight any differences, which are then reviewed by a person.</li>",
-        "<li>For especially important pages, run them through the LLM multiple times and look for agreement among the results.</li>",
+        "<li><strong>prebuilt-read</strong>: aims to capture as much text as possible (great for messy scans, weaker structure).</li>",
+        "<li><strong>prebuilt-layout</strong>: captures text plus geometry (bounding polygons) so we can reason about layout and rebuild pages.</li>",
         "</ul>",
-        "<p>Accurate extraction is critical because every later step depends on this text.</p>"
+        "<p>Both outputs are saved as JSON files and treated as “ground truth inputs” for later steps.</p>",
+
+        "<h3>2) What gets stored</h3>",
+        "<ul>",
+        "<li><code>read.json</code> and <code>layout.json</code> per page</li>",
+        "<li><code>reconstructed.html</code> per page (built from layout geometry)</li>",
+        "<li><code>_analysis/report.html</code> per document + <code>_analysis_global/report.html</code> across all documents</li>",
+        "<li>(Optional) <code>merged.md</code> that reorganizes read+layout into structured Markdown while forbidding invented text</li>",
+        "</ul>",
+
+        "<h3>3) How we decide what needs review</h3>",
+        "<p>We don’t have perfect transcripts, so we use consistency checks: if read and layout disagree strongly, the page is more likely to be problematic. The analysis report uses metrics like similarity, missing tokens, confidence percentiles, and length ratios to produce a review score and risk ranking.</p>",
+
+        "<h3>4) Human review workflow</h3>",
+        "<p>The reviewer webapp shows the original page (PDF/image) next to the reconstructed HTML. Reviewers mark Pass/Fail and can leave comments. Review state and responses are stored in Azure Blob Storage.</p>",
+
+        "<h3>5) Upload strategy</h3>",
+        "<p>Because this pipeline generates lots of small files, we typically zip the output folder (no compression) and upload a single large file, then unpack and re-upload from Azure Cloud Shell using AzCopy.</p>"
       ]
     },
     p2_documents: {
@@ -1181,6 +1302,8 @@
   const infoBody = document.getElementById("info-body");
   const infoList = document.getElementById("info-list");
   const infoBadges = document.getElementById("info-badges");
+  const infoProgressSummary = document.getElementById("info-progress-summary");
+  const infoProgressList = document.getElementById("info-progress-list");
   const btnOpenModal = document.getElementById("btn-open-modal");
 
   const modalBackdrop = document.getElementById("modal-backdrop");
@@ -1190,6 +1313,54 @@
   const modalClose = document.getElementById("modal-close");
 
   let currentNodeId = "mimicker_sanitization";
+
+  function renderMedia(media = []) {
+    const resolved = Array.isArray(media) ? media : [];
+    if (resolved.length === 0) {
+      return [
+        "<div class=\"media-grid\">",
+        "<div class=\"media-card\"><div class=\"media-inner\"><div class=\"media-placeholder\">Room for an image (screenshot) here</div><p class=\"media-caption\">Add a screenshot when available.</p></div></div>",
+        "<div class=\"media-card\"><div class=\"media-inner\"><div class=\"media-placeholder\">Room for a short video here</div><p class=\"media-caption\">Add a short walkthrough clip when available.</p></div></div>",
+        "</div>"
+      ].join("");
+    }
+
+    const cards = resolved.map(item => {
+      const type = item?.type;
+      const caption = item?.caption ? String(item.caption) : "";
+
+      if (type === "image" && item?.src) {
+        const alt = item?.alt ? String(item.alt) : caption;
+        return `\
+<div class="media-card">\
+  <img src="${item.src}" alt="${alt.replace(/\"/g, "&quot;")}" loading="lazy" />\
+  <div class="media-inner">\
+    <p class="media-caption">${caption}</p>\
+  </div>\
+</div>`;
+      }
+
+      if (type === "video" && item?.src) {
+        return `\
+<div class="media-card">\
+  <video src="${item.src}" controls preload="metadata"></video>\
+  <div class="media-inner">\
+    <p class="media-caption">${caption}</p>\
+  </div>\
+</div>`;
+      }
+
+      return `\
+<div class="media-card">\
+  <div class="media-inner">\
+    <div class="media-placeholder">Room for media</div>\
+    <p class="media-caption">${caption || "Add an image or video when available."}</p>\
+  </div>\
+</div>`;
+    }).join("");
+
+    return `<div class="media-grid">${cards}</div>`;
+  }
 
   function renderInfo(nodeId) {
     const data = phaseDetails[nodeId];
@@ -1217,6 +1388,23 @@
       infoBadges.appendChild(span);
     });
 
+    const progressSummary = data.progressSummary || "Status and milestones will be tracked here.";
+    infoProgressSummary.textContent = progressSummary;
+
+    infoProgressList.innerHTML = "";
+    const progressItems = Array.isArray(data.progress) ? data.progress : [];
+    if (progressItems.length === 0) {
+      const li = document.createElement("li");
+      li.textContent = "No progress notes yet.";
+      infoProgressList.appendChild(li);
+    } else {
+      progressItems.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        infoProgressList.appendChild(li);
+      });
+    }
+
     document.querySelectorAll(".node-card").forEach(card => {
       card.classList.toggle("highlight", card.dataset.nodeId === nodeId);
     });
@@ -1228,7 +1416,24 @@
 
     modalTitle.textContent = data.title;
     modalSubtitle.textContent = data.tagline;
-    modalBody.innerHTML = data.modal.join("");
+
+    const progressSummary = data.progressSummary || "Status and milestones will be tracked here.";
+    const progressItems = Array.isArray(data.progress) ? data.progress : [];
+    const progressHtml = [
+      "<h3>Progress</h3>",
+      `<p>${progressSummary}</p>`,
+      "<ul>",
+      ...(progressItems.length ? progressItems.map(p => `<li>${p}</li>`) : ["<li>No progress notes yet.</li>"]),
+      "</ul>"
+    ].join("");
+
+    const mediaHtml = [
+      "<h3>Images & video</h3>",
+      "<p>This section is intentionally reserved for screenshots and short walkthrough videos.</p>",
+      renderMedia(data.media)
+    ].join("");
+
+    modalBody.innerHTML = data.modal.join("") + progressHtml + mediaHtml;
     modalBackdrop.classList.add("show");
     modalBackdrop.setAttribute("aria-hidden", "false");
   }
